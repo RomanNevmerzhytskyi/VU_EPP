@@ -76,7 +76,7 @@ function generateLinks(keywords) {
 
 async function validateLinks(links) {
     try {
-        const response = await fetch('https://epp-romannevmerzhytskyis-projects.vercel.app/check-links', {
+        const response = await fetch('https://vu-epp-romans-projects-98192d1c.vercel.app/check-links', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
