@@ -97,6 +97,7 @@ async function validateLinks(links) {
 }
 
 function displayResults(results) {
+    resultsDiv.style.display = "flex";
     resultsDiv.innerHTML = ''; // Clear previous results
 
     for (const [link, exists] of Object.entries(results)) {
