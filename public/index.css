@@ -66,6 +66,18 @@ body {
 
 .container__results {
     margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    border: 1px solid rgba(255, 255, 2555, .2);
+    color: #fff;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+    background: transparent;
 }
 
 .container__text{
