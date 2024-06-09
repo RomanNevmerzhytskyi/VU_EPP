@@ -8,8 +8,17 @@ btn.addEventListener('click', async (e) => {
     const name = criteria.value.trim();
     if (name) {
         const keywords = generateKeywords(name);
-        const links = generateLinks(keywords);
-        displayResults(links);
+        const profileLinks = generateProfileLinks(keywords);
+        const searchLinks = generateSearchLinks(keywords);
+
+        try {
+            const validProfileLinks = await validateLinks(profileLinks);
+            displayProfileResults(validProfileLinks);
+            displaySearchResults(searchLinks);
+        } catch (error) {
+            console.error('Error:', error.message);
+            resultsDiv.textContent = 'An error occurred while fetching data. Please try again later.';
+        }
     }
 });
 
@@ -52,7 +61,25 @@ function generateRandomNicknames(firstName, lastName) {
     return nicknames;
 }
 
-function generateLinks(keywords) {
+function generateProfileLinks(keywords) {
+    const platforms = {
+        Facebook: 'https://www.facebook.com/',
+        Instagram: 'https://www.instagram.com/',
+        Twitter: 'https://twitter.com/'
+    };
+
+    const links = [];
+
+    keywords.forEach(keyword => {
+        for (const [platform, url] of Object.entries(platforms)) {
+            links.push(`${url}${encodeURIComponent(keyword)}`);
+        }
+    });
+
+    return links;
+}
+
+function generateSearchLinks(keywords) {
     const platforms = {
         Facebook: 'https://www.facebook.com/search/top/?q=',
         Instagram: 'https://www.instagram.com/explore/tags/',
@@ -70,16 +97,58 @@ function generateLinks(keywords) {
     return links;
 }
 
-function displayResults(links) {
-    resultsDiv.innerHTML = ''; // Clear previous results
+async function validateLinks(links) {
+    try {
+        const response = await fetch('https://vu-epp-romans-projects-98192d1c.vercel.app/check-links', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ links })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const results = await response.json();
+        return results;
+    } catch (error) {
+        console.error('Fetch error:', error);
+        throw error;
+    }
+}
+
+function displayProfileResults(results) {
+    const profileResultsDiv = document.createElement('div');
+    profileResultsDiv.classList.add('profile-results');
+    profileResultsDiv.innerHTML = '<h2>Profile Results</h2>';
+    resultsDiv.appendChild(profileResultsDiv);
+
+    for (const [link, exists] of Object.entries(results)) {
+        const a = document.createElement('a');
+        a.href = link;
+        a.target = '_blank';
+        a.innerText = exists ? `User exists on ${link.split('/')[2]}` : `User does not exist on ${link.split('/')[2]}`;
+        a.style.display = 'block';
+        a.style.margin = '5px 0';
+        profileResultsDiv.appendChild(a);
+    }
+}
+
+function displaySearchResults(links) {
+    const searchResultsDiv = document.createElement('div');
+    searchResultsDiv.classList.add('search-results');
+    searchResultsDiv.innerHTML = '<h2>Search Results</h2>';
+    resultsDiv.appendChild(searchResultsDiv);
 
     links.forEach(link => {
         const a = document.createElement('a');
         a.href = link;
         a.target = '_blank';
-        a.innerText = `Search for "${decodeURIComponent(link.split('?q=')[1] || link.split('/tags/')[1] || link.split('?q=')[1])}" on ${link.split('.')[1]}`;
+        a.innerText = `Search for "${decodeURIComponent(link.split('?q=')[1] || link.split('/tags/')[1])}" on ${link.split('.')[1]}`;
         a.style.display = 'block';
         a.style.margin = '5px 0';
-        resultsDiv.appendChild(a);
+        searchResultsDiv.appendChild(a);
     });
 }
