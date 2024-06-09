@@ -8,7 +8,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors({
-    origin: 'https://epp-romannevmerzhytskyis-projects.vercel.app',
+    origin: 'https://vu-epp-romans-projects-98192d1c.vercel.app',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type']
 }));
