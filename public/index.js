@@ -23,6 +23,8 @@ function generateKeywords(name) {
         keywords.push(lastName);
         keywords.push(`${firstName} ${lastName}`);
         keywords.push(`${lastName} ${firstName}`);
+        keywords.push(`${firstName}${lastName}`); // concatenated first and last name
+        keywords.push(`${lastName}${firstName}`); // concatenated last and first name
 
         const randomNicknames = generateRandomNicknames(firstName, lastName);
         randomNicknames.forEach(nickname => {
