@@ -53,7 +53,7 @@ const checkUserProfile = async (url) => {
         const html = await response.text();
 
         if (url.includes('facebook.com')) {
-            return !html.includes('This content isn’t available right now') || !html.includes('Page Not Found');
+            return !html.includes('This content isn’t available right now') && !html.includes('Page Not Found');
         } else if (url.includes('instagram.com')) {
             return !html.includes('Sorry, this page isn\'t available.');
         } else if (url.includes('twitter.com')) {
