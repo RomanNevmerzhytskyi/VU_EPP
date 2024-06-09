@@ -9,13 +9,7 @@ btn.addEventListener('click', async (e) => {
     if (name) {
         const keywords = generateKeywords(name);
         const links = generateLinks(keywords);
-        try {
-            const validLinks = await validateLinks(links);
-            displayResults(validLinks);
-        } catch (error) {
-            console.error('Error:', error.message);
-            resultsDiv.textContent = 'An error occurred while fetching data. Please try again later.';
-        }
+        displayResults(links);
     }
 });
 
@@ -58,9 +52,9 @@ function generateRandomNicknames(firstName, lastName) {
 
 function generateLinks(keywords) {
     const platforms = {
-        Facebook: 'https://www.facebook.com/',
-        Instagram: 'https://www.instagram.com/',
-        Twitter: 'https://twitter.com/'
+        Facebook: 'https://www.facebook.com/search/top/?q=',
+        Instagram: 'https://www.instagram.com/explore/tags/',
+        Twitter: 'https://twitter.com/search?q='
     };
 
     const links = [];
@@ -74,38 +68,16 @@ function generateLinks(keywords) {
     return links;
 }
 
-async function validateLinks(links) {
-    try {
-        const response = await fetch('https://vu-epp-romans-projects-98192d1c.vercel.app/check-links', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ links })
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const results = await response.json();
-        return results;
-    } catch (error) {
-        console.error('Fetch error:', error);
-        throw error;
-    }
-}
-
-function displayResults(results) {
+function displayResults(links) {
     resultsDiv.innerHTML = ''; // Clear previous results
 
-    for (const [link, exists] of Object.entries(results)) {
+    links.forEach(link => {
         const a = document.createElement('a');
         a.href = link;
         a.target = '_blank';
-        a.innerText = exists ? `User exists on ${link.split('/')[2]}` : `User does not exist on ${link.split('/')[2]}`;
+        a.innerText = `Search for "${decodeURIComponent(link.split('?q=')[1] || link.split('/tags/')[1] || link.split('?q=')[1])}" on ${link.split('.')[1]}`;
         a.style.display = 'block';
         a.style.margin = '5px 0';
         resultsDiv.appendChild(a);
-    }
+    });
 }
