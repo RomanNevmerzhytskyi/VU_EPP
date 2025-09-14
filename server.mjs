@@ -13,10 +13,17 @@ const port = process.env.PORT || 3000;
     allowedHeaders: ['Content-Type']
 }));*/
 app.use(cors({
-  origin: [
-    'https://vu-epp.vercel.app',
-    'https://vu-epp-romans-projects-98192d1c.vercel.app'
-  ],
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'https://vu-epp.vercel.app',
+      'https://vu-epp-romans-projects-98192d1c.vercel.app'
+    ];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type']
 }));
