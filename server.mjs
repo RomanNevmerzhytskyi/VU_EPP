@@ -7,11 +7,20 @@ import { fileURLToPath } from 'url';
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors({
+/*app.use(cors({
     origin: 'https://vu-epp-romans-projects-98192d1c.vercel.app',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type']
+}));*/
+app.use(cors({
+    origin: [
+        'https://vu-epp.vercel.app', // your frontend
+        'https://vu-epp-romans-projects-98192d1c.vercel.app' // backend itself
+    ],
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type']
 }));
+
 app.use(express.json());
 
 const __filename = fileURLToPath(import.meta.url);
